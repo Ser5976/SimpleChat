@@ -4,6 +4,7 @@ import {
   registration,
   login,
   checkAuthorization,
+  logout,
 } from './../actioncreators/authActionCreator'; //санки
 
 //типизация пользователя
@@ -13,6 +14,8 @@ export type UserType = {
   email: string;
   createdAt: string;
   updatedAt: string;
+  status: string;
+  newMessage: {};
   avatar?: string;
 };
 //типизация response
@@ -58,7 +61,6 @@ const authSlice = createSlice({
       state.successMessage = '';
       state.token = '';
       state.user = {} as UserType;
-      localStorage.removeItem('token');
     },
   },
   extraReducers: {
@@ -100,6 +102,15 @@ const authSlice = createSlice({
       state.isAuth = false;
       state.errorAuth = action.payload;
     },
+    //-------выход из чата  ----------------
+    [logout.fulfilled.type]: (state, action: PayloadAction<string>) => {
+      state.isAuth = false;
+      state.loading = true;
+      state.successMessage = action.payload;
+      state.token = '';
+      state.user = {} as UserType;
+      localStorage.removeItem('token');
+    },
     //------ проверка авторизации -----------
     [checkAuthorization.pending.type]: (state) => {
       state.loading = true;
@@ -130,6 +141,6 @@ const authSlice = createSlice({
 
 export const {
   setShowAlert, //открытие алерта
-  setClearAuth, // выход из авторизации
+  setClearAuth, // очистка стейта
 } = authSlice.actions; // можно экспартировать синхронные экшены
 export default authSlice.reducer;

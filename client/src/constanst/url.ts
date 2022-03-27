@@ -4,4 +4,5 @@ export const ModelUrls = {
   REGISTRATION: `${ROOT_URL}/auth/registration`,
   LOGIN: `${ROOT_URL}/auth/login`,
   CHECK: `${ROOT_URL}/auth/check`,
+  LOGOUT: `${ROOT_URL}/auth/logout`,
 };

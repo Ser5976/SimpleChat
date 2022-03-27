@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -7,6 +7,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAppDispatch } from '../hooks/redux'; // типизированные хуки useDispath и useSelector
 import { login } from '../store/actioncreators/authActionCreator'; // санка
 import { setShowAlert } from '../store/reducers/AuthSlice'; //экшен для показа алерта
+import { AppContext } from '../context/appContext';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -45,6 +46,7 @@ const LoginForm: React.FC<PropsType> = ({}) => {
   const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
+  const { socket } = useContext(AppContext);
 
   const {
     handleSubmit,
@@ -58,9 +60,10 @@ const LoginForm: React.FC<PropsType> = ({}) => {
   const onSubmit: SubmitHandler<LoginType> = (data: LoginType): void => {
     // санку запускаем в асинхронном режиме,чтобы если запрос пройдёт перейти на chatPage и запустить алерт
     dispatch(login(data))
-      .unwrap()
+      // .unwrap()
       .then(() => {
-        navigate('/');
+        socket.emit('new-user'); //подключаем сокет и посылаем событие 'new-user'
+        navigate('/'); // переход на главную страницу
         dispatch(setShowAlert(true)); //открывает алерт с успешным сообщение
       })
       .catch(

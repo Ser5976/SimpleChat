@@ -2,29 +2,43 @@ import * as React from 'react';
 import { AppBar, Toolbar, Typography, Button } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../hooks/redux'; //хуки useSelector(для получения стейта), useDispatch(для экшенов)
-import { checkAuthorization } from '../store/actioncreators/authActionCreator'; // санка проверка авторизации
-import { setShowAlert, setClearAuth } from '../store/reducers/AuthSlice';
+import {
+  checkAuthorization, //проверка авторизации
+  logout, // выход из чата
+} from '../store/actioncreators/authActionCreator';
+import { setShowAlert } from '../store/reducers/AuthSlice';
 import CustomizedSnackbars from './CustomizedSnackbar';
+import { AppContext } from '../context/appContext';
 
 const Header = () => {
   const navigate = useNavigate();
-  const { isAuth, successMessage, errorAuth, showAlert } = useAppSelector(
+  const { newMessage } = React.useContext(AppContext);
+  const { isAuth, successMessage, errorAuth, showAlert, user } = useAppSelector(
     (state) => state.authReducer
   );
   const dispach = useAppDispatch();
   React.useEffect(() => {
     dispach(checkAuthorization())
-      .unwrap()
+      // .unwrap()
       .then(() => {
         navigate('/');
       })
       .catch((e) => {
-        dispach(setShowAlert(true));
+        if (errorAuth || successMessage) {
+          dispach(setShowAlert(true));
+        }
       });
   }, []);
-
-  const logout = () => {
-    dispach(setClearAuth());
+  //выйти из чата
+  const goOut = () => {
+    const dataLogout = { _id: user.id, newMessage };
+    dispach(logout(dataLogout))
+      .then(() => {
+        dispach(setShowAlert(true));
+      })
+      .catch((e) => {
+        dispach(setShowAlert(true));
+      });
   };
   return (
     <>
@@ -41,7 +55,7 @@ const Header = () => {
             SimpleChat
           </Typography>
           {isAuth && (
-            <Button color="inherit" onClick={logout}>
+            <Button color="inherit" onClick={goOut}>
               Выйти
             </Button>
           )}

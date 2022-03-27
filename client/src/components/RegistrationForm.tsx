@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -8,6 +8,7 @@ import { DropzoneArea } from 'material-ui-dropzone'; // загрузка фай�
 import { useAppDispatch } from '../hooks/redux'; // типизированные хуки useDispath и useSelector
 import { setShowAlert } from '../store/reducers/AuthSlice'; //экшен для открытия алерта
 import { registration } from '../store/actioncreators/authActionCreator'; //санка
+import { AppContext } from '../context/appContext';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -59,6 +60,8 @@ const RegistrationForm: React.FC<PropsType> = ({}) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  const { socket } = useContext(AppContext);
+
   const {
     handleSubmit,
     control,
@@ -88,8 +91,10 @@ const RegistrationForm: React.FC<PropsType> = ({}) => {
     }
     // санку запускаем в асинхронном режиме,чтобы если запрос пройдёт перейти на chatPage и
     dispatch(registration(formData))
-      .unwrap()
-      .then(() => {
+      // .unwrap()
+      .then((data) => {
+        // console.log(data);
+        socket.emit('new-user'); //подключаем сокет и посылаем событие 'new-user'
         dispatch(setShowAlert(true)); //открывает алерт с успешным сообщение
         navigate('/');
       })

@@ -33,6 +33,21 @@ export const login = createAsyncThunk(
     }
   }
 );
+// выход из чата
+export const logout = createAsyncThunk(
+  'auth/logout',
+  async (data: any, { rejectWithValue }) => {
+    console.log(data);
+    try {
+      const response = await axios.post(ModelUrls.LOGOUT, data); //посылаем запрос
+      console.log(response.data);
+      return response.data;
+    } catch (e: any) {
+      // console.log(e.response.data.message);
+      return rejectWithValue(e.response.data.message);
+    }
+  }
+);
 // проверка авторизации,получение нового токина, или выход из авторизации, если токен не валиден
 export const checkAuthorization = createAsyncThunk(
   'auth/checkAuthorization',

@@ -7,7 +7,6 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { useNavigate } from 'react-router-dom';
 import LoginForm from '../components/LoginForm';
 
 const useStyles = makeStyles((theme) => ({
@@ -32,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
 
 const LoginPage = () => {
   const classes = useStyles();
-  const navigate = useNavigate();
 
   return (
     <Container component="main" maxWidth="xs">

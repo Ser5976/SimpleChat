@@ -7,7 +7,13 @@ const userSchema = new Schema(
     email: { type: String, required: true },
     password: { type: String, required: true },
     avatar: { type: String },
+    newMessage: { type: Object, default: {} },
+    status: {
+      type: String,
+      default: 'online',
+    },
   },
+  // { minimize: false },
   { timestamps: true }
 );
 

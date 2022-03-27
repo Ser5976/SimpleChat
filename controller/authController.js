@@ -12,6 +12,8 @@ const generateAccessToken = (
   email,
   createdAt,
   updatedAt,
+  status,
+  newMessage,
   avatar = null
 ) => {
   const payload = {
@@ -20,9 +22,11 @@ const generateAccessToken = (
     email,
     createdAt,
     updatedAt,
+    status,
+    newMessage,
     avatar,
   };
-  return jwt.sign(payload, config.get('secret'), { expiresIn: 30 });
+  return jwt.sign(payload, config.get('secret'), { expiresIn: '1h' });
 };
 
 class authController {
@@ -69,6 +73,8 @@ class authController {
         user.email,
         user.createdAt,
         user.updatedAt,
+        user.status,
+        user.newMessage,
         user.avatar && user.avatar
       );
       // данные на клиент
@@ -98,6 +104,8 @@ class authController {
       if (!validPassword) {
         return res.status(400).json({ message: `Пароль неверный` });
       }
+      user.status = 'online';
+      await user.save();
       //генерация JWT токина
       const token = generateAccessToken(
         user._id,
@@ -105,6 +113,8 @@ class authController {
         user.email,
         user.createdAt,
         user.updatedAt,
+        user.status,
+        user.newMessage,
         user.avatar && user.avatar
       );
       // данные на клиент
@@ -158,6 +168,8 @@ class authController {
         user.email,
         user.createdAt,
         user.updatedAt,
+        user.status,
+        user.newMessage,
         user.avatar && user.avatar
       );
       // данные на клиент
