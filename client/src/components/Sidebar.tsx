@@ -112,10 +112,11 @@ const Sidebar = () => {
               button
               key={member._id}
               selected={member._id === privateMemberMsg?._id}
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: 'pointer', marginBottom: '15px' }}
               className={
                 member._id === user.id ? classes.hideListItem : undefined
               }
+              onClick={() => handelePrivateMemberMsg(member)}
             >
               <ListItemAvatar>
                 {member.avatar ? (
@@ -127,7 +128,10 @@ const Sidebar = () => {
                   <Avatar></Avatar>
                 )}
               </ListItemAvatar>
-              <ListItemText primary={member.login} secondary="Jan 9, 2014" />
+              <ListItemText
+                primary={member.login}
+                // secondary={member.createdAt}
+              />
               {privateMemberMsg?._id !== member._id && (
                 <Badge
                   color="primary"
