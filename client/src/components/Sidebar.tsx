@@ -17,6 +17,7 @@ import {
   resetNotifications,
   addNotifications,
 } from '../store/reducers/AuthSlice';
+import { StyledBadge } from './StyleBage'; //стилизированный bage для зелёненькой хери(онлайн)
 
 // типизация member
 export type MemberType = {
@@ -120,14 +121,24 @@ const Sidebar = () => {
             >
               <ListItemAvatar>
                 {member.avatar ? (
-                  <Avatar
-                    alt="Remy Sharp"
-                    src={`${ROOT_URL}/${member.avatar}`}
-                  />
+                  <StyledBadge
+                    overlap="circular"
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'right',
+                    }}
+                    variant={member.status === 'online' ? 'dot' : undefined}
+                  >
+                    <Avatar
+                      alt="Remy Sharp"
+                      src={`${ROOT_URL}/${member.avatar}`}
+                    />
+                  </StyledBadge>
                 ) : (
                   <Avatar></Avatar>
                 )}
               </ListItemAvatar>
+
               <ListItemText
                 primary={member.login}
                 // secondary={member.createdAt}

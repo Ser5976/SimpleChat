@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { makeStyles, Typography } from '@material-ui/core';
 import CustomizedInputBase from './CustamizidInput';
 import { MemberType } from './Sidebar';
@@ -30,7 +30,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 const MessageForm: React.FC<PropsType> = ({ messages }) => {
   const classes = useStyles();
+  const messageEndRef = useRef<null | HTMLDivElement>(null); //для скрола,чтобы автоматически прокручивался
   console.log(messages);
+  //  для прокрутки скрола вниз автоматически,при переполнении контейнера
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+  const scrollToBottom = () => {
+    messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <>
       <div className={classes.messages_output}>
@@ -52,6 +61,7 @@ const MessageForm: React.FC<PropsType> = ({ messages }) => {
             ))}
           </div>
         ))}
+        <div ref={messageEndRef}></div>
       </div>
       <CustomizedInputBase />
     </>

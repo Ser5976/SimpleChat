@@ -1,5 +1,5 @@
 import React from 'react';
-import { ListItemAvatar, Avatar, Button } from '@material-ui/core';
+import { Avatar, Button } from '@material-ui/core';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import { ROOT_URL } from '../constanst/url';
@@ -27,9 +27,7 @@ const Logout: React.FC<PropsType> = ({ goOut }) => {
 
   return (
     <>
-      <ListItemAvatar>
-        <Avatar alt="Remy Sharp" src={`${ROOT_URL}/${user.avatar}`} />
-      </ListItemAvatar>
+      <Avatar alt="Remy Sharp" src={`${ROOT_URL}/${user.avatar}`} />
 
       <Button color="inherit" onClick={handleMenu}>
         {user.login}
