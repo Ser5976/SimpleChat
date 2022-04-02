@@ -15,7 +15,7 @@ export type UserType = {
   createdAt: string;
   updatedAt: string;
   status: string;
-  newMessage: {};
+  newMessage: any; //уведомление о пропущенных сообщениях
   avatar?: string;
 };
 //типизация response
@@ -48,19 +48,29 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    //здесь можно создавать синхронные экшены,пример:
-    //  setSuccessMessage(state, action: PayloadAction<string>) {
-    //    state.successMessage = action.payload;
-    //  },
+    //здесь можно создавать синхронные экшены
+    // открытие алерта
     setShowAlert(state, action: PayloadAction<boolean>) {
       state.showAlert = action.payload;
     },
+    // очистка стейта
     setClearAuth(state) {
       state.isAuth = false;
       state.loading = true;
       state.successMessage = '';
       state.token = '';
       state.user = {} as UserType;
+    },
+    //добавляем уведомление о непрочитанных сообщениях
+    addNotifications(state, action: PayloadAction<any>) {
+      if (state.user.newMessage[action.payload]) {
+        state.user.newMessage[action.payload] =
+          state.user.newMessage[action.payload] + 1;
+      } else state.user.newMessage[action.payload] = 1;
+    },
+    //удаление уведомление о непрочитанных сообщениях
+    resetNotifications(state, action: PayloadAction<any>) {
+      delete state.user.newMessage[action.payload];
     },
   },
   extraReducers: {
@@ -140,7 +150,9 @@ const authSlice = createSlice({
 });
 
 export const {
-  setShowAlert, //открытие алерта
-  setClearAuth, // очистка стейта
+  setShowAlert,
+  setClearAuth,
+  addNotifications,
+  resetNotifications,
 } = authSlice.actions; // можно экспартировать синхронные экшены
 export default authSlice.reducer;

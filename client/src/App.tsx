@@ -4,8 +4,7 @@ import MyRouter from './router/MyRoter';
 import { AppContext, socket } from './context/appContext';
 
 const App: React.FC = () => {
-  const [rooms, setRooms] = useState([]);
-  const [currentRoom, setCurrentRom] = useState([]);
+  const [currentRoom, setCurrentRoom] = useState('');
   const [members, setMembers] = useState([]);
   const [messages, setMessages] = useState([]);
   const [privateMemberMsg, setPrivateMemberMsg] = useState({});
@@ -16,10 +15,8 @@ const App: React.FC = () => {
     <AppContext.Provider
       value={{
         socket,
-        rooms,
-        setRooms,
         currentRoom,
-        setCurrentRom,
+        setCurrentRoom,
         members,
         setMembers,
         messages,

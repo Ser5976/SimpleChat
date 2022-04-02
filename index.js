@@ -23,7 +23,6 @@ app.use('/auth', authRouter);
 app.use('/api', chatRoomRouter);
 
 //------------------------------------------------------------------
-const rooms = ['general', 'tech', 'finanse'];
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -33,19 +32,19 @@ const io = new Server(server, {
   },
 });
 
-app.get('/rooms', (req, res) => {
-  res.json(rooms);
-});
-//получение последнего сообщения из комнаты
+//функция,которая динамически делает сортировку данных из модели Message
+//группирует все данные в массив ,состоящий из  обЪектов [{_id:date,messagesByDate:[{}]}]
+// в _id лежит дата, а messagesByDate всё остальное, то есть объединяет все данные по дате,
+//следующая дата -это уже другой объект
 async function getLastMessagesFromRoom(room) {
   let roomMessages = await Message.aggregate([
     { $match: { to: room } },
     { $group: { _id: '$date', messagesByDate: { $push: '$$ROOT' } } },
   ]);
-
+  // console.log(roomMessages);
   return roomMessages;
 }
-//сортировать сообщения по дате
+//сортировать сообщения по дате (ранняя дата сверху)
 function sortRoomMessagesByDate(messages) {
   return messages.sort(function (a, b) {
     let date1 = a._id.split('/');
@@ -67,15 +66,16 @@ io.on('connection', (socket) => {
 
   socket.on('join-room', async (room) => {
     socket.join(room);
-    // console.log(room);
+    console.log(room);
     let roomMessages = await getLastMessagesFromRoom(room);
     roomMessages = sortRoomMessagesByDate(roomMessages);
+    // console.log('сортированный', roomMessages);
     socket.emit('room-messages', roomMessages);
   });
 
-  //получение сообщения из комнаты
+  //получение сообщения от клиента в комнату
   socket.on('message-rom', async (room, content, sender, time, date) => {
-    // console.log('сообщение:', content);
+    console.log('сообщение:', room);
     const newMessage = await Message.create({
       content,
       from: sender,
@@ -89,8 +89,8 @@ io.on('connection', (socket) => {
 
     //отправка сообщения в комнату
     io.to(room).emit('room-messages', roomMessages);
-
-    socket.broadcast.emit('notification', room);
+    // событие запустит создание уведомления,что есть сообщение
+    socket.broadcast.emit('notifications', room);
     // console.log(newMessage);
   });
 

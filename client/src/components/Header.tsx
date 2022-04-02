@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { AppBar, Toolbar, Typography, Button } from '@material-ui/core';
+import { AppBar, Toolbar, Typography } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../hooks/redux'; //хуки useSelector(для получения стейта), useDispatch(для экшенов)
 import {
@@ -9,6 +9,7 @@ import {
 import { setShowAlert } from '../store/reducers/AuthSlice';
 import CustomizedSnackbars from './CustomizedSnackbar';
 import { AppContext } from '../context/appContext';
+import Logout from './Logout';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -54,11 +55,7 @@ const Header = () => {
           >
             SimpleChat
           </Typography>
-          {isAuth && (
-            <Button color="inherit" onClick={goOut}>
-              Выйти
-            </Button>
-          )}
+          {isAuth && <Logout goOut={goOut} />}
         </Toolbar>
       </AppBar>
       <CustomizedSnackbars

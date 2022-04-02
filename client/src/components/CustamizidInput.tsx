@@ -3,7 +3,7 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import InputBase from '@material-ui/core/InputBase';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import DirectionsIcon from '@material-ui/icons/Directions';
+import { SendSharp } from '@material-ui/icons';
 import { AppContext } from '../context/appContext';
 import { useAppSelector } from '../hooks/redux';
 
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
 
-      backgroundColor: '#e0e0e0',
+      backgroundColor: '#eeeeee',
     },
     input: {
       marginLeft: theme.spacing(1),
@@ -69,11 +69,6 @@ export default function CustomizedInputBase() {
     socket.emit('message-rom', roomId, message, user, time, todayDate);
     setMessage(''); // очистка инпута
   };
-  // получение данных с сервера(отсортированных)
-  socket.off('room-messages').on('room-messages', (roomMessages: any) => {
-    setMessages(roomMessages);
-    console.log('roomMessages:', roomMessages);
-  });
   return (
     <div className={classes.root}>
       <InputBase
@@ -90,7 +85,7 @@ export default function CustomizedInputBase() {
         aria-label="directions"
         onClick={handleSubmit}
       >
-        <DirectionsIcon />
+        <SendSharp />
       </IconButton>
     </div>
   );
