@@ -3,20 +3,22 @@ import { makeStyles, Typography } from '@material-ui/core';
 import CustomizedInputBase from './CustamizidInput';
 import { MemberType } from './Sidebar';
 import MessageList from './MessageList';
+import { useAppSelector } from '../hooks/redux';
 
 // типизация пропсов
-type MessageType = {
+export type MessageType = {
   content: string;
   date: string;
   from: MemberType;
   time: string;
   to: string;
+  _id: string;
 };
 
 type PropsType = {
   messages: {
     _id: string;
-    messagesByDate: MemberType[];
+    messagesByDate: MessageType[];
   }[];
 };
 
@@ -29,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const MessageForm: React.FC<PropsType> = ({ messages }) => {
+  const { user } = useAppSelector((state) => state.authReducer);
   const classes = useStyles();
   const messageEndRef = useRef<null | HTMLDivElement>(null); //для скрола,чтобы автоматически прокручивался
   console.log(messages);
@@ -46,18 +49,15 @@ const MessageForm: React.FC<PropsType> = ({ messages }) => {
         {messages.map((message, inx) => (
           <div key={inx}>
             <Typography align="center">{message._id}</Typography>
-            {message.messagesByDate?.map((item: any) => (
-              <div
+            {message.messagesByDate?.map((item: MessageType) => (
+              <MessageList
+                /* content={item.content}
+                time={item.time}
+                login={item.from.login}
+                avatar={item.from.avatar} */
+                item={item}
                 key={item._id}
-                style={{ display: 'flex', alignItems: 'flex-end' }}
-              >
-                <MessageList
-                  content={item.content}
-                  time={item.time}
-                  login={item.from.login}
-                  avatar={item.from.avatar}
-                />
-              </div>
+              />
             ))}
           </div>
         ))}
