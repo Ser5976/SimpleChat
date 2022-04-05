@@ -1,9 +1,19 @@
 import React, { useEffect, useRef } from 'react';
-import { makeStyles, Typography } from '@material-ui/core';
+import {
+  makeStyles,
+  Typography,
+  ListItem,
+  ListItemAvatar,
+  Avatar,
+  List,
+} from '@material-ui/core';
 import CustomizedInputBase from './CustamizidInput';
 import { MemberType } from './Sidebar';
 import MessageList from './MessageList';
+import group from '../img/group.jpg';
 import { useAppSelector } from '../hooks/redux';
+import { UserType } from '../store/reducers/AuthSlice';
+import { ROOT_URL } from '../constanst/url';
 
 // типизация пропсов
 export type MessageType = {
@@ -20,6 +30,7 @@ type PropsType = {
     _id: string;
     messagesByDate: MessageType[];
   }[];
+  privateMemberMsg: UserType;
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -30,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '10px',
   },
 }));
-const MessageForm: React.FC<PropsType> = ({ messages }) => {
+const MessageForm: React.FC<PropsType> = ({ messages, privateMemberMsg }) => {
   const { user } = useAppSelector((state) => state.authReducer);
   const classes = useStyles();
   const messageEndRef = useRef<null | HTMLDivElement>(null); //для скрола,чтобы автоматически прокручивался
@@ -42,22 +53,45 @@ const MessageForm: React.FC<PropsType> = ({ messages }) => {
   const scrollToBottom = () => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-
+  console.log(privateMemberMsg);
   return (
     <>
       <div className={classes.messages_output}>
+        <List style={{ backgroundColor: '#eeeeee' }}>
+          <ListItem style={{ justifyContent: 'center' }}>
+            {privateMemberMsg?.login ? (
+              <>
+                <ListItemAvatar>
+                  <Avatar
+                    alt="Remy Sharp"
+                    src={`${ROOT_URL}/${privateMemberMsg.avatar}`}
+                  />
+                </ListItemAvatar>
+                <Typography variant="h6">{privateMemberMsg.login}</Typography>
+              </>
+            ) : (
+              <>
+                <ListItemAvatar>
+                  <Avatar alt="Remy Sharp" src={group} />
+                </ListItemAvatar>
+                <Typography variant="h6">Группа</Typography>
+              </>
+            )}
+          </ListItem>
+        </List>
+
         {messages.map((message, inx) => (
           <div key={inx}>
-            <Typography align="center">{message._id}</Typography>
+            <Typography
+              align="center"
+              style={{
+                margin: '10px',
+              }}
+            >
+              {message._id}
+            </Typography>
             {message.messagesByDate?.map((item: MessageType) => (
-              <MessageList
-                /* content={item.content}
-                time={item.time}
-                login={item.from.login}
-                avatar={item.from.avatar} */
-                item={item}
-                key={item._id}
-              />
+              <MessageList item={item} key={item._id} />
             ))}
           </div>
         ))}

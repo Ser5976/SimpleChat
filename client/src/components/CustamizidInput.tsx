@@ -36,7 +36,7 @@ export default function CustomizedInputBase() {
   const { socket, currentRoom, messages, setMessages, privateMemberMsg } =
     useContext(AppContext);
   const { user } = useAppSelector((state) => state.authReducer);
-  const [message, setMessage] = React.useState('');
+  const [message, setMessage] = React.useState(''); //данные из импута
   // форматирование даты
   const getFormattedDate = () => {
     const date = new Date();
@@ -58,7 +58,7 @@ export default function CustomizedInputBase() {
 
   const handleSubmit = () => {
     if (!message.trim()) return;
-    console.log(message);
+    // console.log(message);
     // форматирование времени
     let today = new Date();
     let minutes =

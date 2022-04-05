@@ -4,11 +4,11 @@ import MyRouter from './router/MyRoter';
 import { AppContext, socket } from './context/appContext';
 
 const App: React.FC = () => {
-  const [currentRoom, setCurrentRoom] = useState('');
-  const [members, setMembers] = useState([]);
-  const [messages, setMessages] = useState([]);
-  const [privateMemberMsg, setPrivateMemberMsg] = useState({});
-  const [newMessage, setNewMessage] = useState({});
+  const [currentRoom, setCurrentRoom] = useState(''); //выбор комнаты
+  const [members, setMembers] = useState([]); // участники
+  const [messages, setMessages] = useState([]); //сообщения
+  const [privateMemberMsg, setPrivateMemberMsg] = useState({}); //данные о выбранном учаснике(user)
+  const [newMessage, setNewMessage] = useState({}); //
 
   const [] = useState();
   return (

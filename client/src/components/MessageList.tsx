@@ -42,9 +42,9 @@ const useStyles = makeStyles(() =>
       // изменяет цвет сособщений
       backgroundColor: ({ user, item }): string => {
         if (user.login === item.from.login) {
-          return '#d1e7dd';
+          return '#b2dfdb';
         }
-        return '#eeeeee';
+        return '#b3e5fc';
       },
 
       //,
@@ -83,7 +83,7 @@ const MessageList: React.FC<PropsType> = ({ item }) => {
                   component="span"
                   variant="caption"
                   className={classes.typografy}
-                  color="primary"
+                  color="textPrimary"
                 >
                   {item.time}
                 </Typography>

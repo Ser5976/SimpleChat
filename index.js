@@ -46,12 +46,14 @@ async function getLastMessagesFromRoom(room) {
 }
 //сортировать сообщения по дате (ранняя дата сверху)
 function sortRoomMessagesByDate(messages) {
+  messages.map((m) => console.log(m._id));
   return messages.sort(function (a, b) {
     let date1 = a._id.split('/');
     let date2 = b._id.split('/');
 
-    date1 = date1[2] + date1[0] + date1[1];
-    date2 = date2[2] + date2[0] + date2[1];
+    date1 = date1[1] + date1[0] + date1[2];
+    date2 = date2[1] + date2[0] + date2[2];
+
     return date1 < date2 ? -1 : 1;
   });
 }
@@ -65,8 +67,9 @@ io.on('connection', (socket) => {
   });
 
   socket.on('join-room', async (room) => {
-    socket.join(room);
-    console.log(room);
+    socket.join(room); //присоединить комнату
+    //socket.leave(previousRoom); // выйти из комнаты комнату
+    // console.log(room);
     let roomMessages = await getLastMessagesFromRoom(room);
     roomMessages = sortRoomMessagesByDate(roomMessages);
     // console.log('сортированный', roomMessages);
@@ -74,11 +77,11 @@ io.on('connection', (socket) => {
   });
 
   //получение сообщения от клиента в комнату
-  socket.on('message-rom', async (room, content, sender, time, date) => {
-    console.log('сообщение:', room);
+  socket.on('message-rom', async (room, content, user, time, date) => {
+    //  console.log('сообщение:', room);
     const newMessage = await Message.create({
       content,
-      from: sender,
+      from: user,
       time,
       date,
       to: room,

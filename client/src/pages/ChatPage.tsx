@@ -16,6 +16,7 @@ const ChatPage = () => {
     setMembers,
     currentRoom,
     setCurrentRoom,
+    privateMemberMsg,
     setMessages,
     messages,
   } = useContext(AppContext);
@@ -46,7 +47,10 @@ const ChatPage = () => {
             <Sidebar />
           </Grid>
           <Grid item xs={8}>
-            <MessageForm messages={messages} />
+            <MessageForm
+              messages={messages}
+              privateMemberMsg={privateMemberMsg}
+            />
           </Grid>
         </Grid>
       </Container>

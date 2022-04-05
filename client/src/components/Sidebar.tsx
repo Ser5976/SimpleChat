@@ -53,7 +53,6 @@ const Sidebar = () => {
   } = useContext(AppContext);
   // выбор группы или участника(тоесть подключение комнаты(room)
   const joinRoom = (room: string, isPublick = true) => {
-    console.log('сработало');
     socket.emit('join-room', room);
     setCurrentRoom(room);
     if (isPublick) {
@@ -67,7 +66,6 @@ const Sidebar = () => {
     }
 
     //добавляем уведомление,что получено сообщение в конату
-    console.log('сработало2');
   });
   // формируем название комнаты из приватных участников(чтобы название сохранялось одно
   // при изменении пользователь - участник,участник-пользователь)
@@ -82,11 +80,11 @@ const Sidebar = () => {
   const handelePrivateMemberMsg = (member: MemberType) => {
     setPrivateMemberMsg(member);
     const roomId = orderIds(user.id, member._id);
-    console.log('roomId:', roomId);
+    //  console.log('roomId:', roomId);
     joinRoom(roomId, false);
   };
   // console.log('currentRoom', currentRoom);
-  console.log('user', user);
+  // console.log('user', user);
   return (
     <>
       <Typography variant="h5">Участники</Typography>
@@ -139,10 +137,7 @@ const Sidebar = () => {
                 )}
               </ListItemAvatar>
 
-              <ListItemText
-                primary={member.login}
-                // secondary={member.createdAt}
-              />
+              <ListItemText primary={member.login} />
               {privateMemberMsg?._id !== member._id && (
                 <Badge
                   color="primary"
