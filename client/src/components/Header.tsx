@@ -8,12 +8,10 @@ import {
 } from '../store/actioncreators/authActionCreator';
 import { setShowAlert } from '../store/reducers/AuthSlice';
 import CustomizedSnackbars from './CustomizedSnackbar';
-import { AppContext } from '../context/appContext';
 import Logout from './Logout';
 
 const Header = () => {
   const navigate = useNavigate();
-  const { newMessage } = React.useContext(AppContext);
   const { isAuth, successMessage, errorAuth, showAlert, user } = useAppSelector(
     (state) => state.authReducer
   );
@@ -32,7 +30,7 @@ const Header = () => {
   }, []);
   //выйти из чата
   const goOut = () => {
-    const dataLogout = { _id: user.id, newMessage };
+    const dataLogout = { _id: user.id, newMessage: user.newMessage };
     dispach(logout(dataLogout))
       .then(() => {
         dispach(setShowAlert(true));

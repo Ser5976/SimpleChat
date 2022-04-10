@@ -3,7 +3,6 @@ import config from 'config';
 import mongoose from 'mongoose';
 import fileUpload from 'express-fileupload';
 import cors from 'cors';
-import chatRoomRouter from './router/chatRoomRouter.js';
 import authRouter from './router/authRouter.js';
 import http from 'http';
 import { Server } from 'socket.io';
@@ -20,7 +19,6 @@ app.use(fileUpload({})); //для работы с файлами
 app.use(express.static('static'));
 
 app.use('/auth', authRouter);
-app.use('/api', chatRoomRouter);
 
 //------------------------------------------------------------------
 
@@ -46,7 +44,6 @@ async function getLastMessagesFromRoom(room) {
 }
 //сортировать сообщения по дате (ранняя дата сверху)
 function sortRoomMessagesByDate(messages) {
-  messages.map((m) => console.log(m._id));
   return messages.sort(function (a, b) {
     let date1 = a._id.split('/');
     let date2 = b._id.split('/');
@@ -103,11 +100,12 @@ io.on('connection', (socket) => {
     try {
       const { _id, newMessage } = req.body;
       const user = await User.findById({ _id });
-      console.log(user);
+      // console.log(user);
       user.status = 'offline';
       user.newMessage = newMessage;
       await user.save();
       const members = await User.find();
+      //console.log(members);
       socket.broadcast.emit('new-user', members);
       // console.log('вы вышли из чата');
       res.json('вы вышли из чата');

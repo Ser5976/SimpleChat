@@ -10,8 +10,6 @@ const generateAccessToken = (
   id,
   login,
   email,
-  createdAt,
-  updatedAt,
   status,
   newMessage,
   avatar = null
@@ -20,8 +18,6 @@ const generateAccessToken = (
     id,
     login,
     email,
-    createdAt,
-    updatedAt,
     status,
     newMessage,
     avatar,
@@ -71,8 +67,6 @@ class authController {
         user._id,
         user.login,
         user.email,
-        user.createdAt,
-        user.updatedAt,
         user.status,
         user.newMessage,
         user.avatar && user.avatar
@@ -111,8 +105,6 @@ class authController {
         user._id,
         user.login,
         user.email,
-        user.createdAt,
-        user.updatedAt,
         user.status,
         user.newMessage,
         user.avatar && user.avatar
@@ -161,15 +153,13 @@ class authController {
   async checkToken(req, res) {
     try {
       const { user } = req;
-
+      const updatedUser = await User.findById({ _id: user.id }); //чтобы знать актуальные данные по стусу и уведомлениям
       const token = generateAccessToken(
         user.id,
         user.login,
         user.email,
-        user.createdAt,
-        user.updatedAt,
-        user.status,
-        user.newMessage,
+        updatedUser.status,
+        updatedUser.newMessage,
         user.avatar && user.avatar
       );
       // данные на клиент
@@ -178,5 +168,49 @@ class authController {
       console.log(e);
     }
   }
+  //непрочитанное уведомление(записываем данные о количестве непрочитанных сообщений )
+  async addNotifications(req, res) {
+    const { _id, room } = req.body;
+    // console.log(req.body);
+    try {
+      const user = await User.findById({ _id });
+      if (user.newMessage[room]) {
+        user.newMessage[room] = user.newMessage[room] + 1;
+      } else {
+        user.newMessage[room] = 1;
+      }
+      const updateNewMessade = await User.findByIdAndUpdate(
+        _id,
+        { newMessage: user.newMessage },
+        {
+          new: true,
+        }
+      );
+      return res.json(updateNewMessade);
+    } catch (e) {
+      res.status(400).json(e);
+    }
+  }
+
+  //непрочитанное уведомление(удаляем данные о количестве непрочитанных сообщений )
+  async resetNotifications(req, res) {
+    console.log(req.body);
+    const { _id, room } = req.body;
+    try {
+      const user = await User.findById({ _id });
+      delete user.newMessage[room];
+      const updateNewMessade = await User.findByIdAndUpdate(
+        _id,
+        { newMessage: user.newMessage },
+        {
+          new: true,
+        }
+      );
+      return res.json(updateNewMessade);
+    } catch (e) {
+      res.status(400).json(e);
+    }
+  }
 }
+
 export default new authController();

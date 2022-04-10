@@ -37,7 +37,7 @@ export const login = createAsyncThunk(
 export const logout = createAsyncThunk(
   'auth/logout',
   async (data: any, { rejectWithValue }) => {
-    console.log(data);
+    // console.log(data);
     try {
       const response = await axios.post(ModelUrls.LOGOUT, data); //посылаем запрос
       console.log(response.data);
@@ -71,6 +71,35 @@ export const checkAuthorization = createAsyncThunk(
       localStorage.removeItem('token'); //удаляем токен из localStorage
       dispatch(setClearAuth()); //очистка стейта
       return rejectWithValue(e.response.data.message);
+    }
+  }
+);
+
+//непрочитанное уведомление(записываем данные о количестве непрочитанных сообщений )
+export const handleAddNotification = createAsyncThunk(
+  'auth/notification',
+  async (data: { _id: string; room: string }) => {
+    // console.log(data);
+    try {
+      const response = await axios.post(ModelUrls.NOTIFICATION, data);
+      console.log(response.data);
+      return response.data;
+    } catch (e: any) {
+      console.log(e);
+    }
+  }
+);
+//непрочитанное уведомление(удаляем данные о количестве непрочитанных сообщений )
+export const handleResetAddNotification = createAsyncThunk(
+  'auth/resetNotification',
+  async (data: { _id: string; room: string }) => {
+    // console.log(data);
+    try {
+      const response = await axios.post(ModelUrls.RESETNOTIFICATION, data);
+      console.log(response.data);
+      return response.data;
+    } catch (e: any) {
+      console.log(e);
     }
   }
 );

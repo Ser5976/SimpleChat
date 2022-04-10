@@ -17,18 +17,20 @@ import {
   resetNotifications,
   addNotifications,
 } from '../store/reducers/AuthSlice';
+import {
+  handleAddNotification,
+  handleResetAddNotification,
+} from '../store/actioncreators/authActionCreator';
 import { StyledBadge } from './StyleBage'; //стилизированный bage для зелёненькой хери(онлайн)
 
 // типизация member
 export type MemberType = {
   _id: string;
   avatar: string;
-  createdAt: string;
   email: string;
   login: string;
   password?: string;
   status: string;
-  updatedAt: string;
   newMessage: any;
 };
 
@@ -58,15 +60,15 @@ const Sidebar = () => {
     if (isPublick) {
       setPrivateMemberMsg(null);
     }
-    dispatch(resetNotifications(room)); // при открытии комнаты удаляется непрочитанное сообщение
+    dispatch(handleResetAddNotification({ _id: user.id, room })); // при открытии комнаты удаляется непрочитанное сообщение
   };
   socket.off('notifications').on('notifications', (room: string) => {
     if (currentRoom !== room) {
-      dispatch(addNotifications(room));
+      //непрочитанное уведомление(записываем данные о количестве непрочитанных сообщений )
+      dispatch(handleAddNotification({ _id: user.id, room }));
     }
-
-    //добавляем уведомление,что получено сообщение в конату
   });
+
   // формируем название комнаты из приватных участников(чтобы название сохранялось одно
   // при изменении пользователь - участник,участник-пользователь)
   const orderIds = (id1: string, id2: string) => {
@@ -79,9 +81,10 @@ const Sidebar = () => {
   //выбор участника
   const handelePrivateMemberMsg = (member: MemberType) => {
     setPrivateMemberMsg(member);
-    const roomId = orderIds(user.id, member._id);
+
+    const room = orderIds(user.id, member._id);
     //  console.log('roomId:', roomId);
-    joinRoom(roomId, false);
+    joinRoom(room, false);
   };
   // console.log('currentRoom', currentRoom);
   // console.log('user', user);

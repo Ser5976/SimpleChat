@@ -45,7 +45,7 @@ const MessageForm: React.FC<PropsType> = ({ messages, privateMemberMsg }) => {
   const { user } = useAppSelector((state) => state.authReducer);
   const classes = useStyles();
   const messageEndRef = useRef<null | HTMLDivElement>(null); //для скрола,чтобы автоматически прокручивался
-  console.log(messages);
+  // console.log(messages);
   //  для прокрутки скрола вниз автоматически,при переполнении контейнера
   useEffect(() => {
     scrollToBottom();
@@ -53,7 +53,7 @@ const MessageForm: React.FC<PropsType> = ({ messages, privateMemberMsg }) => {
   const scrollToBottom = () => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-  console.log(privateMemberMsg);
+  //console.log(privateMemberMsg);
   return (
     <>
       <div className={classes.messages_output}>

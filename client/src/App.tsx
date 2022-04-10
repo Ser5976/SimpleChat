@@ -8,7 +8,7 @@ const App: React.FC = () => {
   const [members, setMembers] = useState([]); // участники
   const [messages, setMessages] = useState([]); //сообщения
   const [privateMemberMsg, setPrivateMemberMsg] = useState({}); //данные о выбранном учаснике(user)
-  const [newMessage, setNewMessage] = useState({}); //
+  //  const [newMessage, setNewMessage] = useState({}); //
 
   const [] = useState();
   return (
@@ -23,8 +23,8 @@ const App: React.FC = () => {
         setMessages,
         privateMemberMsg,
         setPrivateMemberMsg,
-        newMessage,
-        setNewMessage,
+        //  newMessage,
+        //setNewMessage,
       }}
     >
       <BrowserRouter>

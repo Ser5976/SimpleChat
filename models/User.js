@@ -13,8 +13,8 @@ const userSchema = new Schema(
       default: 'online',
     },
   },
-  // { minimize: false },
-  { timestamps: true }
+  { minimize: false }
+  // { timestamps: true }
 );
 
 export default model('User', userSchema);

@@ -5,6 +5,8 @@ import {
   login,
   checkAuthorization,
   logout,
+  handleAddNotification,
+  handleResetAddNotification,
 } from './../actioncreators/authActionCreator'; //санки
 
 //типизация пользователя
@@ -12,8 +14,6 @@ export type UserType = {
   id: string;
   login: string;
   email: string;
-  createdAt: string;
-  updatedAt: string;
   status: string;
   newMessage: any; //уведомление о пропущенных сообщениях
   avatar?: string;
@@ -145,6 +145,20 @@ const authSlice = createSlice({
       state.isAuth = false;
       state.loading = false;
       state.errorAuth = action.payload;
+    },
+    //непрочитанное уведомление(записываем данные о количестве непрочитанных сообщений )
+    [handleAddNotification.fulfilled.type]: (
+      state,
+      action: PayloadAction<UserType>
+    ) => {
+      state.user.newMessage = action.payload.newMessage;
+    },
+    //непрочитанное уведомление(удаляем данные о количестве непрочитанных сообщений )
+    [handleResetAddNotification.fulfilled.type]: (
+      state,
+      action: PayloadAction<UserType>
+    ) => {
+      state.user.newMessage = action.payload.newMessage;
     },
   },
 });

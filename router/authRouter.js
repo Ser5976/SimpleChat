@@ -21,5 +21,7 @@ authRouter.post('/login', authController.login);
 authRouter.get('/users', authController.getUsers);
 authRouter.delete('/users/:id', authController.delete);
 authRouter.get('/check', authMiddleware, authController.checkToken);
+authRouter.post('/notification', authController.addNotifications);
+authRouter.post('/resetNotification', authController.resetNotifications);
 
 export default authRouter;
