@@ -21,9 +21,9 @@ const ChatPage = () => {
     messages,
   } = useContext(AppContext);
   useEffect(() => {
-    setCurrentRoom('general');
+    // setCurrentRoom('general');
     console.log(currentRoom);
-    socket.emit('join-room', 'general'); //подключаем сокет и посылаем событие 'join-room',отпраляем название комнаты
+    // socket.emit('join-room', 'general'); //подключаем сокет и посылаем событие 'join-room',отпраляем название комнаты
     socket.emit('new-user'); //подключаем сокет и посылаем событие 'new-user',для получения всех пользователей
   }, []);
   //============ получение сообщений от сокета ===========
@@ -50,6 +50,7 @@ const ChatPage = () => {
             <MessageForm
               messages={messages}
               privateMemberMsg={privateMemberMsg}
+              currentRoom={currentRoom}
             />
           </Grid>
         </Grid>

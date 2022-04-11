@@ -11,6 +11,7 @@ import CustomizedInputBase from './CustamizidInput';
 import { MemberType } from './Sidebar';
 import MessageList from './MessageList';
 import group from '../img/group.jpg';
+import general from '../img/general.jpg';
 import { useAppSelector } from '../hooks/redux';
 import { UserType } from '../store/reducers/AuthSlice';
 import { ROOT_URL } from '../constanst/url';
@@ -31,6 +32,7 @@ type PropsType = {
     messagesByDate: MessageType[];
   }[];
   privateMemberMsg: UserType;
+  currentRoom: string;
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -41,7 +43,11 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '10px',
   },
 }));
-const MessageForm: React.FC<PropsType> = ({ messages, privateMemberMsg }) => {
+const MessageForm: React.FC<PropsType> = ({
+  messages,
+  privateMemberMsg,
+  currentRoom,
+}) => {
   const { user } = useAppSelector((state) => state.authReducer);
   const classes = useStyles();
   const messageEndRef = useRef<null | HTMLDivElement>(null); //для скрола,чтобы автоматически прокручивался
@@ -53,7 +59,7 @@ const MessageForm: React.FC<PropsType> = ({ messages, privateMemberMsg }) => {
   const scrollToBottom = () => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-  //console.log(privateMemberMsg);
+  // console.log(privateMemberMsg);
   return (
     <>
       <div className={classes.messages_output}>
@@ -69,12 +75,26 @@ const MessageForm: React.FC<PropsType> = ({ messages, privateMemberMsg }) => {
                 </ListItemAvatar>
                 <Typography variant="h6">{privateMemberMsg.login}</Typography>
               </>
-            ) : (
+            ) : currentRoom === 'general' ? (
               <>
                 <ListItemAvatar>
                   <Avatar alt="Remy Sharp" src={group} />
                 </ListItemAvatar>
                 <Typography variant="h6">Группа</Typography>
+              </>
+            ) : (
+              <>
+                <ListItemAvatar>
+                  <Avatar alt="Remy Sharp" src={general} />
+                </ListItemAvatar>
+                <Typography
+                  variant="h6"
+                  style={{
+                    fontFamily: 'Permanent Marker',
+                  }}
+                >
+                  SimpleChat
+                </Typography>
               </>
             )}
           </ListItem>

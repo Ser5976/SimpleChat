@@ -65,9 +65,19 @@ export default function CustomizedInputBase() {
       today.getMinutes() < 10 ? '0' + today.getMinutes() : today.getMinutes();
     let time = `${today.getHours()}:${minutes}`;
     let roomId = currentRoom; // текущая комната
-    // отправка данных(текущая комната,сообщение,данные пользователя,время,дата) на сервер
-    socket.emit('message-rom', roomId, message, user, time, todayDate);
+    // отправка данных(текущая комната,сообщение,данные пользователя,время,дата,privateMemberMsg-это получатель сообщения,нужно для уведомления тех кто не в сети) на сервер
+    socket.emit(
+      'message-rom',
+      roomId,
+      message,
+      user,
+      time,
+      todayDate,
+      privateMemberMsg
+    );
     setMessage(''); // очистка инпута
+    console.log(' текущая комната:', currentRoom);
+    console.log('получатель:', privateMemberMsg);
   };
   return (
     <div className={classes.root}>
@@ -81,6 +91,7 @@ export default function CustomizedInputBase() {
       <Divider className={classes.divider} orientation="vertical" />
       <IconButton
         color="primary"
+        disabled={!currentRoom}
         className={classes.iconButton}
         aria-label="directions"
         onClick={handleSubmit}

@@ -65,7 +65,7 @@ io.on('connection', (socket) => {
 
   socket.on('join-room', async (room) => {
     socket.join(room); //присоединить комнату
-    //socket.leave(previousRoom); // выйти из комнаты комнату
+    //socket.leave(previousRoom); // выйти из комнаты
     // console.log(room);
     let roomMessages = await getLastMessagesFromRoom(room);
     roomMessages = sortRoomMessagesByDate(roomMessages);
@@ -74,25 +74,51 @@ io.on('connection', (socket) => {
   });
 
   //получение сообщения от клиента в комнату
-  socket.on('message-rom', async (room, content, user, time, date) => {
-    //  console.log('сообщение:', room);
-    const newMessage = await Message.create({
-      content,
-      from: user,
-      time,
-      date,
-      to: room,
-    });
-    //для сортировки сообщений
-    let roomMessages = await getLastMessagesFromRoom(room);
-    roomMessages = sortRoomMessagesByDate(roomMessages);
+  socket.on(
+    'message-rom',
+    async (room, content, user, time, date, privateMemberMsg) => {
+      //  console.log('сообщение:', room);
+      //сохранение сообщения в базу данных
+      const newMessage = await Message.create({
+        content,
+        from: user,
+        time,
+        date,
+        to: room,
+      });
+      //для сортировки сообщений
+      let roomMessages = await getLastMessagesFromRoom(room);
+      roomMessages = sortRoomMessagesByDate(roomMessages);
 
-    //отправка сообщения в комнату
-    io.to(room).emit('room-messages', roomMessages);
-    // событие запустит создание уведомления,что есть сообщение
-    socket.broadcast.emit('notifications', room);
-    // console.log(newMessage);
-  });
+      //отправка сообщения в комнату
+      io.to(room).emit('room-messages', roomMessages);
+      // событие запустит создание уведомления,что есть количество непрочитанных сообщений
+      socket.broadcast.emit('notifications', room);
+      // console.log(newMessage);
+      // для создания и сохранения в базе уведомления получателю,который не в сети---------------
+      if (privateMemberMsg?.status === 'offline') {
+        try {
+          const recipient = await User.findById({ _id: privateMemberMsg._id });
+          if (recipient.newMessage[room]) {
+            recipient.newMessage[room] = recipient.newMessage[room] + 1;
+          } else {
+            recipient.newMessage[room] = 1;
+          }
+          const updateNewMessade = await User.findByIdAndUpdate(
+            { _id: privateMemberMsg._id },
+            { newMessage: recipient.newMessage },
+            {
+              new: true,
+            }
+          );
+          console.log(updateNewMessade);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      //------------------------------------------------------------------------
+    }
+  );
 
   //выход пользователя из системы
   app.post('/auth/logout', async (req, res) => {
