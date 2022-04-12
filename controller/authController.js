@@ -22,7 +22,7 @@ const generateAccessToken = (
     newMessage,
     avatar,
   };
-  return jwt.sign(payload, config.get('secret'), { expiresIn: '1h' });
+  return jwt.sign(payload, config.get('secret'), { expiresIn: '24h' });
 };
 
 class authController {

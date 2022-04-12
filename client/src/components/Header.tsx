@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
 import { AppBar, Toolbar, Typography } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../hooks/redux'; //хуки useSelector(для получения стейта), useDispatch(для экшенов)
@@ -9,12 +9,15 @@ import {
 import { setShowAlert } from '../store/reducers/AuthSlice';
 import CustomizedSnackbars from './CustomizedSnackbar';
 import Logout from './Logout';
+import { AppContext } from '../context/appContext';
 
 const Header = () => {
   const navigate = useNavigate();
   const { isAuth, successMessage, errorAuth, showAlert, user } = useAppSelector(
     (state) => state.authReducer
   );
+  const { setMessages, setPrivateMemberMsg, setCurrentRoom } =
+    useContext(AppContext);
   const dispach = useAppDispatch();
   React.useEffect(() => {
     dispach(checkAuthorization())
@@ -30,10 +33,17 @@ const Header = () => {
   }, []);
   //выйти из чата
   const goOut = () => {
-    const dataLogout = { _id: user.id, newMessage: user.newMessage };
+    const dataLogout = {
+      _id: user.id,
+      newMessage: user.newMessage,
+    };
     dispach(logout(dataLogout))
       .then(() => {
-        dispach(setShowAlert(true));
+        dispach(setShowAlert(true)); // открываем алерт с сообщением о выходе из чата
+        //обнуляем стейты
+        setMessages([]);
+        setPrivateMemberMsg({});
+        setCurrentRoom('');
       })
       .catch((e) => {
         dispach(setShowAlert(true));

@@ -64,6 +64,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('join-room', async (room) => {
+    console.log('вход:', room);
     socket.join(room); //присоединить комнату
     //socket.leave(previousRoom); // выйти из комнаты
     // console.log(room);
@@ -79,7 +80,7 @@ io.on('connection', (socket) => {
     async (room, content, user, time, date, privateMemberMsg) => {
       //  console.log('сообщение:', room);
       //сохранение сообщения в базу данных
-      const newMessage = await Message.create({
+      await Message.create({
         content,
         from: user,
         time,
@@ -92,7 +93,7 @@ io.on('connection', (socket) => {
 
       //отправка сообщения в комнату
       io.to(room).emit('room-messages', roomMessages);
-      // событие запустит создание уведомления,что есть количество непрочитанных сообщений
+      // событие запустит создание уведомления,тоесть количество непрочитанных сообщений
       socket.broadcast.emit('notifications', room);
       // console.log(newMessage);
       // для создания и сохранения в базе уведомления получателю,который не в сети---------------
@@ -111,7 +112,7 @@ io.on('connection', (socket) => {
               new: true,
             }
           );
-          console.log(updateNewMessade);
+          // console.log(updateNewMessade);
         } catch (e) {
           console.log(e);
         }

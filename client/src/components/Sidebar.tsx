@@ -14,10 +14,6 @@ import { ROOT_URL } from '../constanst/url';
 import { AppContext } from '../context/appContext';
 import { useAppSelector, useAppDispatch } from '../hooks/redux';
 import {
-  resetNotifications,
-  addNotifications,
-} from '../store/reducers/AuthSlice';
-import {
   handleAddNotification,
   handleResetAddNotification,
 } from '../store/actioncreators/authActionCreator';
@@ -62,6 +58,7 @@ const Sidebar = () => {
     }
     dispatch(handleResetAddNotification({ _id: user.id, room })); // при открытии комнаты удаляется непрочитанное сообщение
   };
+  //получение события для инициации сохранения уведомлений
   socket.off('notifications').on('notifications', (room: string) => {
     if (currentRoom !== room) {
       //непрочитанное уведомление(записываем данные о количестве непрочитанных сообщений )
