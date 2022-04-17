@@ -46,7 +46,6 @@ const schema = yup.object().shape({
 });
 //-----------------------------------------
 // типизация пропсов
-type PropsType = {};
 export type RegistrationType = {
   login: string;
   password: string;
@@ -55,7 +54,7 @@ export type RegistrationType = {
 };
 //--------------------------------------------
 
-const RegistrationForm: React.FC<PropsType> = ({}) => {
+const RegistrationForm: React.FC = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();

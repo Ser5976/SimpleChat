@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { AppBar, Toolbar, Typography } from '@material-ui/core';
+import jwt_decode from 'jwt-decode'; //декодировать токен
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../hooks/redux'; //хуки useSelector(для получения стейта), useDispatch(для экшенов)
 import {
@@ -20,22 +21,27 @@ const Header = () => {
     useContext(AppContext);
   const dispach = useAppDispatch();
   React.useEffect(() => {
-    dispach(checkAuthorization())
-      // .unwrap()
-      .then(() => {
-        navigate('/');
-      })
-      .catch((e) => {
-        if (errorAuth || successMessage) {
-          dispach(setShowAlert(true));
-        }
-      });
+    if (localStorage.getItem('token')) {
+      const token: any = localStorage.getItem('token');
+      let decoded: any = jwt_decode(token); //декодированный token
+      // для того, чтобы вызвать логаут если токен не валиден
+      const dataLogout = {
+        _id: decoded.id,
+      };
+      dispach(checkAuthorization(dataLogout))
+        // .unwrap()
+        .then(() => {
+          navigate('/');
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
   }, []);
   //выйти из чата
   const goOut = () => {
     const dataLogout = {
       _id: user.id,
-      newMessage: user.newMessage,
     };
     dispach(logout(dataLogout))
       .then(() => {

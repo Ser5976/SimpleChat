@@ -48,7 +48,7 @@ const MessageForm: React.FC<PropsType> = ({
   privateMemberMsg,
   currentRoom,
 }) => {
-  const { user } = useAppSelector((state) => state.authReducer);
+  // const { user } = useAppSelector((state) => state.authReducer);
   const classes = useStyles();
   const messageEndRef = useRef<null | HTMLDivElement>(null); //для скрола,чтобы автоматически прокручивался
   // console.log(messages);

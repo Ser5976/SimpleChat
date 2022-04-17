@@ -1,30 +1,23 @@
 import React, { useContext, useEffect } from 'react';
-import { makeStyles, Container, Grid } from '@material-ui/core';
-import { useAppDispatch, useAppSelector } from '../hooks/redux';
+import { Container, Grid } from '@material-ui/core';
+import { useAppSelector } from '../hooks/redux';
 import { AppContext } from '../context/appContext';
 import Sidebar from '../components/Sidebar';
 import MessageForm from '../components/MessageForm';
 
-const useStyles = makeStyles((theme) => ({}));
-
 const ChatPage = () => {
-  const classes = useStyles();
-  const { user, loading } = useAppSelector((state) => state.authReducer);
+  const { loading } = useAppSelector((state) => state.authReducer);
   const {
     socket,
-    members,
     setMembers,
     currentRoom,
-    setCurrentRoom,
     privateMemberMsg,
     setMessages,
     messages,
   } = useContext(AppContext);
   useEffect(() => {
-    // setCurrentRoom('general');
-    console.log(currentRoom);
-    // socket.emit('join-room', 'general'); //подключаем сокет и посылаем событие 'join-room',отпраляем название комнаты
-    socket.emit('new-user'); //подключаем сокет и посылаем событие 'new-user',для получения всех пользователей
+    // console.log(currentRoom);
+    socket.emit('new-user'); // посылаем событие 'new-user',для получения всех пользователей
   }, []);
   //============ получение сообщений от сокета ===========
   socket.off('new-user').on('new-user', (data: any) => {

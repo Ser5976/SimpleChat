@@ -60,6 +60,8 @@ const Sidebar = () => {
   };
   //получение события для инициации сохранения уведомлений
   socket.off('notifications').on('notifications', (room: string) => {
+    console.log('currentRoom:', currentRoom);
+    console.log('room:', room);
     if (currentRoom !== room) {
       //непрочитанное уведомление(записываем данные о количестве непрочитанных сообщений )
       dispatch(handleAddNotification({ _id: user.id, room }));

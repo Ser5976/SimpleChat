@@ -33,14 +33,14 @@ const schema = yup.object().shape({
 });
 //-----------------------------------------
 // типизация пропсов
-type PropsType = {};
+
 type LoginType = {
   login: string;
   password: string;
 };
 //--------------------------------------------
 
-const LoginForm: React.FC<PropsType> = ({}) => {
+const LoginForm: React.FC = () => {
   const classes = useStyles();
 
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ const LoginForm: React.FC<PropsType> = ({}) => {
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
-  // получение данных из форма и отправка на сервак
+  // получение данных из формы и отправка на сервак
   const onSubmit: SubmitHandler<LoginType> = (data: LoginType): void => {
     // санку запускаем в асинхронном режиме,чтобы если запрос пройдёт перейти на chatPage и запустить алерт
     dispatch(login(data))

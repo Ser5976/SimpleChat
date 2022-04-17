@@ -51,7 +51,7 @@ export const logout = createAsyncThunk(
 // проверка авторизации,получение нового токина, или выход из авторизации, если токен не валиден
 export const checkAuthorization = createAsyncThunk(
   'auth/checkAuthorization',
-  async (_, { rejectWithValue, dispatch }) => {
+  async (dataLogout: any, { rejectWithValue, dispatch }) => {
     const token = localStorage.getItem('token'); //получаем токен из localStorage
 
     if (!token) {
@@ -70,6 +70,7 @@ export const checkAuthorization = createAsyncThunk(
     } catch (e: any) {
       localStorage.removeItem('token'); //удаляем токен из localStorage
       dispatch(setClearAuth()); //очистка стейта
+      dispatch(logout(dataLogout)); //для запуска выхода из чата ,когда токен не валиден
       return rejectWithValue(e.response.data.message);
     }
   }

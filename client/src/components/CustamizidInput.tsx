@@ -33,8 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function CustomizedInputBase() {
   const classes = useStyles();
-  const { socket, currentRoom, messages, setMessages, privateMemberMsg } =
-    useContext(AppContext);
+  const { socket, currentRoom, privateMemberMsg } = useContext(AppContext);
   const { user } = useAppSelector((state) => state.authReducer);
   const [message, setMessage] = React.useState(''); //данные из импута
   // форматирование даты
@@ -76,8 +75,8 @@ export default function CustomizedInputBase() {
       privateMemberMsg
     );
     setMessage(''); // очистка инпута
-    console.log(' текущая комната:', currentRoom);
-    console.log('получатель:', privateMemberMsg);
+    // console.log(' текущая комната:', currentRoom);
+    // console.log('получатель:', privateMemberMsg);
   };
   return (
     <div className={classes.root}>

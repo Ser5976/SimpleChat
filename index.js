@@ -33,7 +33,7 @@ const io = new Server(server, {
 //функция,которая динамически делает сортировку данных из модели Message
 //группирует все данные в массив ,состоящий из  обЪектов [{_id:date,messagesByDate:[{}]}]
 // в _id лежит дата, а messagesByDate всё остальное, то есть объединяет все данные по дате,
-//следующая дата -это уже другой объект
+//следующая дата -это уже другой объект, короче агрегация
 async function getLastMessagesFromRoom(room) {
   let roomMessages = await Message.aggregate([
     { $match: { to: room } },
@@ -51,7 +51,7 @@ function sortRoomMessagesByDate(messages) {
     date1 = date1[1] + date1[0] + date1[2];
     date2 = date2[1] + date2[0] + date2[2];
 
-    return date1 < date2 ? -1 : 1;
+    return date1 < date2 ? -1 : 1; // а это учитывает месяц
   });
 }
 
@@ -60,21 +60,21 @@ io.on('connection', (socket) => {
   socket.on('new-user', async () => {
     // console.log('событие new-user');
     const members = await User.find(); //получение всех пользователей(участников) по событию 'new-user'
-    io.emit('new-user', members);
+    io.emit('new-user', members); // посылаем на клиент участников
   });
 
   socket.on('join-room', async (room) => {
-    console.log('вход:', room);
     socket.join(room); //присоединить комнату
     //socket.leave(previousRoom); // выйти из комнаты
     // console.log(room);
+    // получаем и сортируем сообщения по комнате
     let roomMessages = await getLastMessagesFromRoom(room);
     roomMessages = sortRoomMessagesByDate(roomMessages);
     // console.log('сортированный', roomMessages);
-    socket.emit('room-messages', roomMessages);
+    socket.emit('room-messages', roomMessages); // отправляем отсортированные сообщения на клиент
   });
 
-  //получение сообщения от клиента в комнату
+  //получение сообщения от клиента, сохранения в базе и возвращения отсортированных  в комнату
   socket.on(
     'message-rom',
     async (room, content, user, time, date, privateMemberMsg) => {
@@ -93,7 +93,7 @@ io.on('connection', (socket) => {
 
       //отправка сообщения в комнату
       io.to(room).emit('room-messages', roomMessages);
-      // событие запустит создание уведомления,тоесть количество непрочитанных сообщений
+      // событие запустит создание уведомления,то есть количество непрочитанных сообщений
       socket.broadcast.emit('notifications', room);
       // console.log(newMessage);
       // для создания и сохранения в базе уведомления получателю,который не в сети---------------
@@ -125,11 +125,11 @@ io.on('connection', (socket) => {
   app.post('/auth/logout', async (req, res) => {
     // console.log(req.body);
     try {
-      const { _id, newMessage } = req.body;
+      const { _id } = req.body;
       const user = await User.findById({ _id });
       // console.log(user);
       user.status = 'offline';
-      user.newMessage = newMessage;
+
       await user.save();
       const members = await User.find();
       //console.log(members);
